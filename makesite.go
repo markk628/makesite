@@ -1,28 +1,45 @@
 package main
 
-<<<<<<< HEAD
 import (
+	"fmt"
 	"io/ioutil"
+	"html/template"
+	"os"
 )
 
-func main() {
-
+type post struct {
+	User string
+	Content string
 }
 
-func readFile() string {
-	fileContents, err := ioutil.ReadFile("first-post.txt")
+func readFile(templateName string) string {
+	fileContents, err := ioutil.ReadFile(templateName)
 	if err != nil {
+		// A common use of `panic` is to abort if a function returns an error
+        // value that we don’t know how to (or want to) handle. This example
+        // panics if we get an unexpected error when creating a new file.
 		panic(err)
 	}
-
 	return string(fileContents)
 }
 
-func renderTemplate()
-=======
-import "fmt"
+func renderTemplate(content string) *template.Template {
+	path:= []string {
+		"template.tmpl",
+	}
+
+	templateFile := template.Must(template.New("template.tmpl").ParseFiles(path...))
+	err := templateFile.Execute(os.Stdout, post{User: "John Doe", Content: content})
+	if err != nil {
+		panic(err)
+	}
+	return templateFile
+}
 
 func main() {
-	fmt.Println("Hello, world!")
+	fmt.Println("Evenin lads")
+
+	content := readFile("first-post.txt")
+	t := renderTemplate(content)
+	print(t)
 }
->>>>>>> 9514ac8a2c135a448a2b15a4b246dcd5d59ee7bf
