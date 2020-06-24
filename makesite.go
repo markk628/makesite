@@ -2,9 +2,10 @@ package main
 
 import (
 	"flag"
-	"os"
+	"fmt"
 	"html/template"
 	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -56,13 +57,35 @@ func writeTemplateToFile(tmplName string, data string) {
 	}
 }
 
+func isTxtFile(filename string) bool {
+	if strings.Contains(filename, ".") {
+		return strings.Split(filename, ".")[1] == "txt"
+	} else {
+		return false
+	}
+}
+
 func main() {
-	filePtr := flag.String("file", "", "txt file to be converted to html file")
+	filePtr := flag.String("file", "", "name of txt file to be converted to html file")
+	dirPtr := flag.String("dir", "", "name of directory to search")
 	flag.Parse()
+	if *dirPtr != "" {
+		files, err := ioutil.ReadDir(*dirPtr)
+		if err != nil{
+			panic(err)
+		}
+		for _, file := range files {
+			name := file.Name()
+			if isTxtFile(name) == true {
+				renderTemplate("template.tmpl", readFile(name))
+				writeTemplateToFile("template.tmpl", name)
+			}
+		}
+	}
 	if *filePtr != "" {
 		renderTemplate("template.tmpl", readFile(*filePtr))
 		writeTemplateToFile("template.tmpl", *filePtr)
 	} else {
-		print("run what?")
+		fmt.Print("run what?")
 	}
 }
