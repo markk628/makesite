@@ -7,6 +7,9 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"time"
+
+	"github.com/jinzhu/now"
 )
 
 type post struct {
@@ -60,12 +63,13 @@ func writeTemplateToFile(tmplName string, data string) {
 func isTxtFile(filename string) bool {
 	if strings.Contains(filename, ".") {
 		return strings.Split(filename, ".")[1] == "txt"
-	} else {
-		return false
 	}
+	return false
 }
 
 func main() {
+	time.Now()
+
 	filePtr := flag.String("file", "", "name of txt file to be converted to html file")
 	dirPtr := flag.String("dir", "", "name of directory to search")
 	flag.Parse()
@@ -79,13 +83,16 @@ func main() {
 			if isTxtFile(name) == true {
 				renderTemplate("template.tmpl", readFile(name))
 				writeTemplateToFile("template.tmpl", name)
+				fmt.Println(file.Name())
+				fmt.Println(now.BeginningOfMinute())
 			}
 		}
 	}
 	if *filePtr != "" {
 		renderTemplate("template.tmpl", readFile(*filePtr))
 		writeTemplateToFile("template.tmpl", *filePtr)
-	} else {
-		fmt.Print("run what?")
+		fmt.Println(now.BeginningOfMinute())
 	}
+	fmt.Println("run what?")
+	fmt.Println(now.BeginningOfMinute())
 }
